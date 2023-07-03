@@ -2,7 +2,7 @@ If you make use of the FABRIC STAIN DATASET data, please cite the following refe
 
 ``` bibtex 
 @misc{FABRIC STAIN DATASET,
-	author="TO BE FILLED MANUALLY!",
+	author="Primesh Pathirana",
 	title="FABRIC STAIN DATASET",
 	year={2020},
 	url="https://www.kaggle.com/datasets/priemshpathirana/fabric-stain-dataset"
