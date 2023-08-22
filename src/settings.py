@@ -60,7 +60,9 @@ ORGANIZATION_NAME: Optional[
 ] = "Intellisense Lab of University of Moratuwa, Sri Lanka"
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = "https://uom.lk/cse/labs/IntelliSense"
 
-SLYTAGSPLIT: Optional[Dict[str, List[str]]] = None
+SLYTAGSPLIT: Optional[Dict[str, List[str]]] = {
+    "categories" : ["defect free", "stain"]
+}
 TAGS: List[str] = None
 
 ##################################
