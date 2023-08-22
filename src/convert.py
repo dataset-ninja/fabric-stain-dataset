@@ -120,22 +120,20 @@ def convert_and_upload_supervisely_project(
         return count
 
     progress = sly.Progress("Create dataset ds", count_jpg_files(images_folder))
+    dataset = api.dataset.create(project.id, "ds", change_name_if_conflict=True)
 
     for curr_image_folder in os.listdir(images_folder):
         curr_images_path = os.path.join(images_folder, curr_image_folder)
         curr_bboxes_path = os.path.join(bboxes_folder, curr_image_folder)
 
         if dir_exists(curr_images_path):
-            dataset = api.dataset.create(
-                project.id, curr_image_folder, change_name_if_conflict=True
-            )
-
             images_names = os.listdir(curr_images_path)
 
             for img_names_batch in sly.batched(images_names, batch_size=batch_size):
                 images_pathes_batch = [
                     os.path.join(curr_images_path, image_name) for image_name in img_names_batch
                 ]
+                img_names_batch = [f"{curr_image_folder}_{name}" for name in img_names_batch]
                 img_infos = api.image.upload_paths(dataset.id, img_names_batch, images_pathes_batch)
                 img_ids = [im_info.id for im_info in img_infos]
 
