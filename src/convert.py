@@ -1,10 +1,16 @@
-import supervisely as sly
 import os
-from dataset_tools.convert import unpack_if_archive
-import src.settings as s
-from urllib.parse import unquote, urlparse
-from supervisely.io.fs import get_file_name
 import shutil
+from urllib.parse import unquote, urlparse
+
+import numpy as np
+import supervisely as sly
+from dotenv import load_dotenv
+from supervisely.io.fs import dir_exists, file_exists, get_file_name
+
+import src.settings as s
+from dataset_tools.convert import unpack_if_archive
+
+# https://www.kaggle.com/datasets/priemshpathirana/fabric-stain-dataset
 
 
 def download_dataset(teamfiles_dir: str) -> str:
@@ -45,21 +51,88 @@ def download_dataset(teamfiles_dir: str) -> str:
     return dataset_path
 
 
-
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
-    ### Function should read local dataset and upload it to Supervisely project, then return project info.###
-    raise NotImplementedError("The converter should be implemented manually.")
+    # project_name = "FABRIC STAIN DATASET"
+    dataset_path = "APP_DATA/archive"
+    batch_size = 30
 
-    # dataset_path = "/local/path/to/your/dataset" # general way
-    # dataset_path = download_dataset(teamfiles_dir) # for large datasets stored on instance
+    images_folder_name = "images"
+    bboxes_folder_name = "annotations"
+    bboxes_ext = ".txt"
 
-    # ... some code here ...
+    test = []
 
-    # sly.logger.info('Deleting temporary app storage files...')
-    # shutil.rmtree(storage_dir)
+    def create_ann(image_path):
+        labels = []
 
-    # return project
+        image_np = sly.imaging.image.read(image_path)[:, :, 0]
+        img_height = image_np.shape[0]
+        img_wight = image_np.shape[1]
 
+        bbox_name = get_file_name(image_path) + bboxes_ext
 
+        bbox_path = os.path.join(curr_bboxes_path, bbox_name)
+        if file_exists(bbox_path):
+            with open(bbox_path) as f:
+                content = f.read().split("\n")
+
+                for curr_data in content:
+                    if len(curr_data) != 0:
+                        ann_data = list(map(float, curr_data.split(" ")))
+
+                        left = int((ann_data[1] - ann_data[3] / 2) * img_wight)
+                        right = int((ann_data[1] + ann_data[3] / 2) * img_wight)
+                        top = int((ann_data[2] - ann_data[4] / 2) * img_height)
+                        bottom = int((ann_data[2] + ann_data[4] / 2) * img_height)
+                        rectangle = sly.Rectangle(top=top, left=left, bottom=bottom, right=right)
+                        label = sly.Label(rectangle, obj_class)
+                        labels.append(label)
+
+            tag_name = image_path.split("/")[-2]
+            tags = [sly.Tag(tag_meta) for tag_meta in tag_metas if tag_meta.name == tag_name]
+
+            return sly.Annotation(img_size=(img_height, img_wight), labels=labels, img_tags=tags)
+
+    obj_class = sly.ObjClass("stain", sly.Rectangle)
+    tag_names = [
+        "defect_free",
+        "stain",
+    ]
+    tag_metas = [sly.TagMeta(name, sly.TagValueType.NONE) for name in tag_names]
+
+    project = api.project.create(workspace_id, project_name, change_name_if_conflict=True)
+    meta = sly.ProjectMeta(obj_classes=[obj_class], tag_metas=tag_metas)
+    api.project.update_meta(project.id, meta.to_json())
+
+    images_folder = os.path.join(dataset_path, images_folder_name)
+    bboxes_folder = os.path.join(dataset_path, bboxes_folder_name)
+
+    for curr_image_folder in os.listdir(images_folder):
+        curr_images_path = os.path.join(images_folder, curr_image_folder)
+        curr_bboxes_path = os.path.join(bboxes_folder, curr_image_folder)
+
+        if dir_exists(curr_images_path):
+            dataset = api.dataset.create(
+                project.id, curr_image_folder, change_name_if_conflict=True
+            )
+
+            images_names = os.listdir(curr_images_path)
+
+            progress = sly.Progress(
+                "Create dataset {}".format(curr_image_folder), len(images_names)
+            )
+
+            for img_names_batch in sly.batched(images_names, batch_size=batch_size):
+                images_pathes_batch = [
+                    os.path.join(curr_images_path, image_name) for image_name in img_names_batch
+                ]
+                img_infos = api.image.upload_paths(dataset.id, img_names_batch, images_pathes_batch)
+                img_ids = [im_info.id for im_info in img_infos]
+
+                anns_batch = [create_ann(image_path) for image_path in images_pathes_batch]
+                api.annotation.upload_anns(img_ids, anns_batch)
+
+                progress.iters_done_report(len(img_names_batch))
+    return project

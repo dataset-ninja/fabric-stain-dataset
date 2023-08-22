@@ -1,6 +1,6 @@
 If you make use of the Fabric Stain Dataset data, please cite the following reference:
 
-``` bibtex 
+```bibtex
 @dataset{Fabric Stain Dataset,
 	author={Primesh Pathirana},
 	title={Fabric Stain Dataset},
@@ -9,4 +9,4 @@ If you make use of the Fabric Stain Dataset data, please cite the following refe
 }
 ```
 
-[🔗 Source](https://www.kaggle.com/datasets/priemshpathirana/fabric-stain-dataset)
+[Source](https://www.kaggle.com/datasets/priemshpathirana/fabric-stain-dataset)
