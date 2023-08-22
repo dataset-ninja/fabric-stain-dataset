@@ -109,6 +109,18 @@ def convert_and_upload_supervisely_project(
     images_folder = os.path.join(dataset_path, images_folder_name)
     bboxes_folder = os.path.join(dataset_path, bboxes_folder_name)
 
+    def count_jpg_files(folder_path):
+        count = 0
+
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                if file.lower().endswith(".jpg"):
+                    count += 1
+
+        return count
+
+    progress = sly.Progress("Create dataset ds", count_jpg_files(images_folder))
+
     for curr_image_folder in os.listdir(images_folder):
         curr_images_path = os.path.join(images_folder, curr_image_folder)
         curr_bboxes_path = os.path.join(bboxes_folder, curr_image_folder)
@@ -119,10 +131,6 @@ def convert_and_upload_supervisely_project(
             )
 
             images_names = os.listdir(curr_images_path)
-
-            progress = sly.Progress(
-                "Create dataset {}".format(curr_image_folder), len(images_names)
-            )
 
             for img_names_batch in sly.batched(images_names, batch_size=batch_size):
                 images_pathes_batch = [
