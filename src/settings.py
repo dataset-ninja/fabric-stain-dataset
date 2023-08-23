@@ -24,7 +24,7 @@ LICENSE: License = License.CC0_1_0()
 APPLICATIONS: List[Union[Industry, Domain, Research]] = [Industry.Textile()]
 CATEGORY: Category = Category.Manufacturing()
 
-CV_TASKS: List[CVTask] = [CVTask.ObjectDetection()]
+CV_TASKS: List[CVTask] = [CVTask.ObjectDetection(), CVTask.Classification()]
 ANNOTATION_TYPES: List[AnnotationType] = [AnnotationType.ObjectDetection()]
 
 RELEASE_DATE: Optional[str] = None  # e.g. "YYYY-MM-DD"
@@ -61,7 +61,7 @@ ORGANIZATION_NAME: Optional[
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = "https://uom.lk/cse/labs/IntelliSense"
 
 SLYTAGSPLIT: Optional[Dict[str, List[str]]] = {
-    "categories" : ["defect free", "stain"]
+    "classification categories": ["defect free", "stain"]
 }
 TAGS: List[str] = None
 
