@@ -13,7 +13,7 @@ from dataset_tools.templates import (
 ##################################
 # * Before uploading to instance #
 ##################################
-PROJECT_NAME: str = "Fabric Stain Dataset"
+PROJECT_NAME: str = "Fabric Stain"
 PROJECT_NAME_FULL: str = "Fabric Stain Dataset"
 HIDE_DATASET = False  # set False when 100% sure about repo quality
 
