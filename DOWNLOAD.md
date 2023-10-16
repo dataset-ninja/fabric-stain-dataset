@@ -1,4 +1,4 @@
-Dataset **Fabric Stain Dataset** can be downloaded in [Supervisely format](https://developer.supervisely.com/api-references/supervisely-annotation-json-format):
+Dataset **Fabric Stain** can be downloaded in [Supervisely format](https://developer.supervisely.com/api-references/supervisely-annotation-json-format):
 
  [Download](https://assets.supervisely.com/supervisely-supervisely-assets-public/teams_storage/f/x/w9/uUe1EgyhARa6qs8DT3Kv7klAGPDHdUUTETydcHbdgHBTYpPDlDMCih68F4NHlDJKZhB8frHPRAcVpiWvRhfxELwx0Drks6m1ttUce9ZVT99heq4uvin45irgIiHx.tar)
 
@@ -11,7 +11,7 @@ pip install --upgrade dataset-tools
 ``` python
 import dataset_tools as dtools
 
-dtools.download(dataset='Fabric Stain Dataset', dst_dir='~/dataset-ninja/')
+dtools.download(dataset='Fabric Stain', dst_dir='~/dataset-ninja/')
 ```
 Make sure not to overlook the [python code example](https://developer.supervisely.com/getting-started/python-sdk-tutorials/iterate-over-a-local-project) available on the Supervisely Developer Portal. It will give you a clear idea of how to effortlessly work with the downloaded dataset.
 
