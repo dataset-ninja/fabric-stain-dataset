@@ -1,6 +1,6 @@
 Dataset **Fabric Stain** can be downloaded in [Supervisely format](https://developer.supervisely.com/api-references/supervisely-annotation-json-format):
 
- [Download](https://www.dropbox.com/scl/fi/n7vxled7imqlwjangpb17/fabric-stain-DatasetNinja.tar?rlkey=adwaxxp4qammo6ohk85fr0zzi&dl=1)
+ [Download](https://assets.supervisely.com/remote/eyJsaW5rIjogImZzOi8vYXNzZXRzLzE2MThfRmFicmljIFN0YWluL2ZhYnJpYy1zdGFpbi1EYXRhc2V0TmluamEudGFyIiwgInNpZyI6ICJ2bmF4cTBNY3NsSWRIMzFkNFBOdVNwejZPcFNRR3pORjJNa05IK1VoK1JrPSJ9)
 
 As an alternative, it can be downloaded with *dataset-tools* package:
 ``` bash
